@@ -17,15 +17,13 @@ A native C++ implementation of the Pi SPL monitor replaces the Node.js monitor f
 - **`provision-pi-cpp.ps1`** — Windows PowerShell provisioner that copies source to the Pi over SSH, builds with CMake on-device, writes the `.env`, installs mTLS certs, and registers a systemd unit. Mirrors `provision-pi.ps1` for the Node monitor; no WSL required.
 - **`test/Dockerfile.monitor-cpp`** — Ubuntu 24.04 multi-stage image (builder + runtime) for CI validation of the C++ monitor build and `TEST_MODE` output.
 
-### New Feature — License Server (Node.js/Fastify)
+### New Feature — License Server
 
-A production-grade license server replaces the previous Python/Flask implementation. Deployed as a Docker container on a dedicated DigitalOcean droplet behind Cloudflare Access.
+A production-grade license server backs the Zonal licensing system. Deployed as a Docker container behind Cloudflare Access.
 
-- **Fastify + PostgreSQL** — `/api` (public) and `/admin` (protected) route split. Public routes handle license activation and status checks from Zonal controllers; admin routes handle creation, revocation, and the browser portal.
-- **Cloudflare Access authentication** — `/admin/*` requires a valid Cloudflare Access JWT (browser sessions) or a bearer token (server-to-server). Verifies CF JWTs against JWKS with a 1-hour cache; token audience and issuer are validated on every request.
-- **Activation binding** — `bind_on_activate: true` locks a license to the first machine ID that activates it. Subsequent checks from the same machine ID pass; mismatches are rejected.
-- **CI/CD pipeline** — `.github/workflows/license-server.yml` builds the image, pushes to GHCR, and SSH-deploys to the droplet on every push to `apps/license-server/` or the workflow file itself.
-- **Admin portal** — browser-accessible at `/admin/` (Cloudflare Access email-gated), showing a full license table with create/revoke/delete actions.
+- **License activation and validation** — Zonal controllers verify their license key on startup. Keys are bound to the activating machine on first use.
+- **Admin portal** — Browser-accessible management interface for creating, revoking, and reviewing licenses.
+- **CI/CD pipeline** — Automatically built and deployed on every update.
 
 ### New Feature — Release Mirror Workflow
 
