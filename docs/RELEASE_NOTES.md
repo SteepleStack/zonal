@@ -1,5 +1,46 @@
 # Release Notes - SPL Controller
 
+## v2.4.3 — Fix: brace-expansion Override Scope
+
+**Release Date:** June 3, 2026
+
+### Bug Fix
+
+- **brace-expansion override** — scoped the npm override to `brace-expansion@>=5.0.0` to avoid forcibly upgrading v1.x/v2.x consumers (nx internals) to v5, which has an incompatible module API. The v5 CVE fix (CVE-2026-45149) is still applied.
+
+---
+
+## v2.4.2 — Security: Dependency CVE Patches
+
+**Release Date:** June 3, 2026
+
+### Security
+
+Patched all high and medium severity CVEs identified by Docker Scout in the v2.4.1 image.
+
+- **fastify** upgraded 5.2.2 → 5.8.5 (fixes CVE-2026-25223, CVE-2025-32442, CVE-2026-3635 — Content-Type validation bypass)
+- **next** upgraded 15.5.16 → 15.5.19 (fixes CVE-2026-45109 — authentication bypass)
+- **brace-expansion** pinned ≥ 5.0.6 via overrides (fixes CVE-2026-45149 — ReDoS)
+- **ws** pinned ≥ 8.20.1 via overrides (fixes CVE-2026-45736)
+- **postcss** pinned ≥ 8.5.10 via overrides (fixes CVE-2026-41305 — XSS)
+
+No functional changes. Remaining unfixed: `busybox` CVE-2025-60876 (no fix available in Alpine 3.23).
+
+---
+
+## v2.4.1 — Bug Fixes: Monitor Buffering, Provisioner CRLF, GHCR Registry
+
+**Release Date:** June 3, 2026
+
+### Bug Fixes
+
+- **monitor-cpp** — add `std::unitbuf` to flush stdout immediately when piped to journald; previously logs would buffer silently until process termination
+- **provision-template.ps1** — base64-encode the remote shell script before piping to SSH; PowerShell adds `\r\n` line endings on Windows, causing `bash: set: pipefail\r: invalid option` failures on the Pi
+- **docker-compose.deploy.yml** — switch `lounge-controller` image reference from Docker Hub to GHCR (`ghcr.io/steeplestack/zonal-controller`)
+- **server cert** — regenerated mosquitto TLS server certificate with SAN entries for `spl.elc-server.com` and `172.16.0.111`; libmosquitto performs strict hostname verification and was rejecting the CN-only cert
+
+---
+
 ## v2.4.0 — C++ Monitor, License Server, Hardware Library
 
 **Release Date:** June 2, 2026
