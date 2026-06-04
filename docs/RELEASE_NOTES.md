@@ -1,5 +1,23 @@
 # Release Notes - SPL Controller
 
+## v2.8.0 — Signed License Verification
+
+**Release Date:** June 4, 2026
+
+### Security
+
+- **Ed25519 signed license responses** — the license server now signs every `/api/activate` and `/api/status/:key` response with an Ed25519 private key; the corresponding public key is embedded in the controller binary at build time
+- **Tamper detection on load** — `LicenseClient.load()` verifies the stored signature on every controller startup; a license file whose signature fails verification is silently rejected (controller falls back to "no license" state, redirecting to `/activate`), preventing local `license.json` edits from granting unauthorized features or tier upgrades
+- **Signature verification on receive** — `activateLicense()` and `refreshLicense()` verify the server's signature before writing to disk; a response with a bad signature is rejected with an error rather than accepted
+- **Grace mode for legacy licenses** — unsigned non-trial licenses (activated before v2.8.0) are accepted with a log warning; they receive a fresh signed response on next refresh, eliminating the grace window automatically
+- **Public key endpoint** — `GET /api/pubkey` on the license server returns the active verification public key (operators only, useful for key rotation verification)
+
+### Infrastructure
+
+- Docker image: `ghcr.io/steeplestack/zonal-controller:2.8.0`
+
+---
+
 ## v2.7.0 — License Tiers, Feature Enforcement & Admin Portal CRUD
 
 **Release Date:** June 4, 2026
