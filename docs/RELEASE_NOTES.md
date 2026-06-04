@@ -1,5 +1,66 @@
 # Release Notes - SPL Controller
 
+## v2.7.0 — License Tiers, Feature Enforcement & Admin Portal CRUD
+
+**Release Date:** June 4, 2026
+
+### New Features
+
+- **License tier system** — introduced Starter (3 zones / 1 controller), Pro (10 zones / 10 controllers), and Enterprise (unlimited) tiers with `TIER_CONFIGS` constants; trial licenses now carry full tier limits (time-gated only, no feature restrictions during trial)
+- **Vendor-agnostic feature flag** — `qsys_integration` renamed to `audio_control` across all license data, defaults, and templates; prepares for future Dante/Yamaha integrations
+- **Tier display in dashboard** — License Management panel now shows the license tier (Starter / Pro / Enterprise), Customer Portal button linking to `https://steeplestack.org/portal`, and hides activation/trial forms when a valid license is already active
+- **`requireFeature` middleware** — new `makeFeatureHooks(license)` in the controller gates routes behind license feature flags; `audio_control` now enforced on MQTT publish (gain commands), settings write, and profile write routes; `web_dashboard` gates dashboard serving
+- **Dashboard gain control gating** — gain floor/ceiling sliders, override engage/release buttons, and global Override All button are disabled with a license notice when `audio_control` is false
+- **Admin portal editing** — `PATCH /admin/license/:key` endpoint allows updating customer name, max zones/controllers, expiration date, and features on existing licenses; admin portal now has tier preset buttons (Starter/Pro/Enterprise), feature checkboxes on license creation, and an inline edit panel per license row
+
+### Bug Fixes
+
+- Fixed pre-existing `ignoreDeprecations: "6.0"` TypeScript config error (invalid value — corrected to `"5.0"`)
+
+### Infrastructure
+
+- Docker image: `ghcr.io/steeplestack/zonal-controller:2.7.0`
+
+---
+
+## v2.6.0 — Security: Path Validation Hardening
+
+**Release Date:** June 3, 2026
+
+### Security
+
+- **License path validation** — `LicenseClient` constructor now resolves and validates the license file path is contained within the data directory using `path.resolve` + `path.relative`; added full test suite covering traversal, encoded paths, and edge cases
+- **MQTT TLS cert path validation** — `loadMqttTls` in server.ts now resolves and validates the `ca.crt` path is within the cert directory before reading
+
+### Infrastructure
+
+- Docker image: `ghcr.io/steeplestack/zonal-controller:2.6.0`
+
+---
+
+## v2.5.0 — Dashboard Redesign, Import/Export, Security Hardening
+
+**Release Date:** June 3, 2026
+
+### New Features
+
+- **Steeplestack brand header** — header now shows the official Steeplestack logo mark and "Steeplestack / Zonal" title matching the website brand identity
+- **Import/Export context menu** — the Export button on monitor and ganged cards is replaced with a single ⇅ button that opens a context menu with Import and Export options; importing accepts only `.json` files and sanitizes all values before applying to prevent XSS/injection
+- **Version in settings dropdown** — current app version is now displayed in the user settings dropdown just above Sign Out
+
+### Security
+
+- **Path traversal protection in provision** — `walkDir` now validates all file paths are within the base directory using `path.resolve` + `path.relative` before reading; added full test suite covering traversal, symlinks, and encoded paths
+- **SAST fixes** — resolved Aikido findings: pinned `softprops/action-gh-release` and `codecov/codecov-action` to commit hashes; fixed template injection in mirror workflow; added non-root user to test Dockerfiles; moved hardcoded license key to env var; fixed `baseUrl` TS deprecation; fixed shell injection in git hook
+- **Dependency CVE patches** — `brace-expansion` v5 pinned to `>=5.0.6` (CVE-2026-45149); `ws` pinned to `>=8.20.1`; `postcss` pinned to `>=8.5.10`
+
+### Infrastructure
+
+- Docker image: `ghcr.io/steeplestack/zonal-controller:2.5.0`
+- Test stack updated to use GHCR image
+
+---
+
 ## v2.4.3 — Fix: brace-expansion Override Scope
 
 **Release Date:** June 3, 2026
