@@ -1,5 +1,42 @@
 # Release Notes - SPL Controller
 
+## v2.9.0 — State Persistence & Admin Panel Editing
+
+**Release Date:** June 5, 2026
+
+### Bug Fixes
+
+- **Controller state now survives restarts** — overrides, schedules, and tuning settings previously lived only in memory, so a daily server reboot (and the resulting container restart) reset them to Docker Compose defaults. A new `controller_state` table now persists this state to SQLite and the controller restores it on startup
+  - **Overrides** — manual override engagement (including timed overrides, with expired ones skipped on restore) is saved and reloaded
+  - **Schedules** — schedule rules are saved on update and restored on startup
+  - **All tuning settings** — the controller constructor now reads every `SplConfig` field (raise/lower cooldowns, smoothing window, thresholds, etc.) from the saved settings row instead of falling back to hardcoded defaults for several of them
+
+### Improvements
+
+- **User & Role management editing restored** — the admin panel now has inline edit and create forms for both users (username / password / role assignment) and roles (name / description / permissions), with success and error feedback
+
+### Infrastructure
+
+- Docker image: `ghcr.io/steeplestack/zonal-controller:2.9.0`
+- New `controller_state` table is created automatically via migration on existing databases — no manual steps required
+
+---
+
+## v2.8.1 — License Revocation Race Condition Fix
+
+**Release Date:** June 5, 2026
+
+### Bug Fixes
+
+- **License revocation now takes effect immediately** — when `POST /api/license/refresh` receives a definitive rejection from the license server (deleted, revoked, or expired license), the controller now clears its local license cache and deletes `license.json` on disk; previously the in-memory state remained valid until the next restart, leaving the user with dashboard access despite the license being removed
+- **Dashboard redirects on revocation** — after a refresh that returns an invalid license, the dashboard now navigates to `/activate` rather than showing a confusing state with an error banner alongside the old active status
+
+### Infrastructure
+
+- Docker image: `ghcr.io/steeplestack/zonal-controller:2.8.1`
+
+---
+
 ## v2.8.0 — Signed License Verification
 
 **Release Date:** June 4, 2026
