@@ -1,5 +1,20 @@
 # Release Notes - SPL Controller
 
+## v3.0.1 — Feature gating no longer requires `manage_license`
+
+**Release Date:** June 9, 2026
+
+### Bug Fixes
+
+- **Non-admin roles can now use feature-gated controls** — the dashboard gates gain control, overrides, and the save button on the `audio_control` license feature, but the feature flags were only readable via `GET /api/license`, which requires `manage_license`. A role like `operator` (with `adjust_gain` / `manage_config` but not `manage_license`) got a 403 fetching the license, so `audio_control` read as `false` and the Gain Control settings were greyed out even though the license has the feature. Feature flags are now served from a new auth-only endpoint `GET /api/license/features` (no sensitive fields), so UI feature gating works for every authenticated role. `manage_license` continues to gate only the full license details and the License panel.
+
+### Infrastructure
+
+- Docker image: `ghcr.io/steeplestack/zonal-controller:3.0.1`
+- No migration or compose changes required.
+
+---
+
 ## v3.0.0 — Docker-Stable Licensing & Coherent Permissions
 
 **Release Date:** June 9, 2026
