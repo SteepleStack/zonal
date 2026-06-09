@@ -1,5 +1,25 @@
 # Release Notes - SPL Controller
 
+## v3.1.0 — Reliable control delivery, monitor presence & broker hardening
+
+**Release Date:** June 9, 2026
+
+### Improvements
+
+- **Control commands are no longer silently lost during a reconnect** — overrides, controller config, schedules, and monitor config were all published and subscribed at MQTT QoS 0, and the controller and monitor both used clean sessions (the controller even randomized its client ID). A command issued while a client was briefly reconnecting simply vanished. The controller and C++ monitor now use **persistent sessions** (stable client IDs + `clean: false`) and the dashboard publishes commands at **QoS 1**, with the controller/monitor subscribing to their command topics at QoS 1. The broker now queues those commands and delivers them on reconnect. Telemetry (`spl`) intentionally stays QoS 0 so stale readings are never queued or replayed.
+- **Dead monitors now show as offline** — a monitor only published `hello{online:false}` on a *graceful* shutdown, so a power loss or container kill left the retained `hello{online:true}` in place and the dashboard kept showing a dead monitor as live. The monitor now registers an **MQTT Last Will** (retained `hello{online:false}`); the broker publishes it on any ungraceful drop and the dashboard flips the monitor offline (after ~1.5× the 60 s keepalive).
+
+### Security
+
+- **Broker resource & TLS hardening** — `mosquitto.conf` now sets `message_size_limit 262144` and `max_queued_messages 1000` (bounding memory from oversized or queued payloads, including the new persistent-session queues), pins **TLS 1.2** (disabling legacy 1.0/1.1), and restricts to a modern AEAD cipher list. mTLS, cert-CN ACLs, and signed licensing are unchanged.
+
+### Infrastructure
+
+- Docker image: `ghcr.io/steeplestack/zonal-controller:3.1.0`
+- No migration required. **This release updates `consumer/platforms/docker/mosquitto.conf`** — consumers pulling the updated compose bundle get the broker hardening automatically on redeploy (an already-running broker picks it up on container restart). No other consumer compose changes are required.
+
+---
+
 ## v3.0.2 — Fix unstyled starter page at the root URL
 
 **Release Date:** June 9, 2026
