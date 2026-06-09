@@ -1,5 +1,39 @@
 # Release Notes - SPL Controller
 
+## v3.0.0 — Docker-Stable Licensing & Coherent Permissions
+
+**Release Date:** June 9, 2026
+
+### Bug Fixes
+
+- **Licenses no longer break when a Docker container is rebuilt** — the controller derived its machine ID from the container hostname, which changes every time the container is recreated. On the next refresh the license server saw a "machine mismatch" and the controller wiped `license.json`, so customers lost their license simply by updating their image. The controller now derives a **stable machine ID from a UUID persisted in the data volume** (`/data/machine-id`), so it survives recreation and rebuilds. Set `SPL_MACHINE_ID` to pin it explicitly.
+- **The `operator` role now behaves as its name implies** — `view_dashboard` and `adjust_gain` were defined but enforced nowhere, so a role granting them did nothing while the real gates lived under other permissions. Every permission now gates exactly the capability its name describes.
+
+### Improvements
+
+- **Budgeted license rebinding** — instead of bricking a license on a machine change, `/api/activate` and `/api/status` let the binding follow the customer up to `metadata.rebind_limit` (default **5**) moves within a trailing **90-day** window, logged in `activations[]` and re-signed with the new machine ID. Existing licenses bound to an old hostname migrate automatically on first refresh. Admins can manually unbind/repoint via `PATCH /admin/license/:key` (`machine_id: null`).
+- **Coherent 7-permission model** — `view_dashboard` (read: live feed, settings/profiles GET), `adjust_gain` (real-time gain overrides), `manage_config` (settings, profiles, config publish, schedules), `manage_monitors` (provision/remove monitors), `manage_users`, `manage_roles` (role CRUD **and** roles/permissions reads), `manage_license`. The redundant `set_override` was merged into `adjust_gain`.
+- **Closed permission gaps** — `POST /api/provision/download` now requires `manage_monitors`, and `GET /api/roles` / `GET /api/permissions` now require `manage_roles` (previously any authenticated user could call them).
+
+### Security
+
+- **All high-severity dependency advisories cleared** — pinned the transitive build/dev-tooling packages flagged by Dependabot (`koa` ≥2.16.4, `minimatch` ≥9.0.7, `picomatch` ≥4.0.4, `serialize-javascript` ≥7.0.5) via npm `overrides`. None were runtime dependencies of the controller or license-server. High/critical advisory count dropped to **0**; the remaining moderate advisories require a future `@nx/*` major upgrade.
+
+### Removed
+
+- **Node.js Pi monitor (`apps/monitor`) removed** — the C++ monitor (`apps/monitor-cpp`) is now the only implementation. Provisioning already shipped the C++ build (the controller images bundle it and the on-Pi setup compiles it), so existing deployments are unaffected. The Node-monitor test image and standalone Node provisioning scripts were removed and the integration-test stack now uses the C++ monitor image.
+
+### Breaking Changes
+
+- **`set_override` permission removed.** A one-time DB migration upgrades any role holding `set_override` to `adjust_gain`, then drops it. To preserve existing read access, every existing role is also granted `view_dashboard` — review and tighten roles afterward if you want stricter view gating.
+
+### Infrastructure
+
+- Docker image: `ghcr.io/steeplestack/zonal-controller:3.0.0`
+- Permission migration runs automatically on existing databases — no manual steps required.
+
+---
+
 ## v2.9.0 — State Persistence & Admin Panel Editing
 
 **Release Date:** June 5, 2026
@@ -507,7 +541,7 @@ npx nx serve controller
 
 - **User accounts** — create, edit, enable/disable, and delete users from the web dashboard
 - **Custom roles** — define roles with granular permission sets; assign multiple roles per user
-- **Permissions** — `view_dashboard`, `adjust_gain`, `set_override`, `manage_monitors`, `manage_config`, `manage_users`, `manage_roles`, `manage_license`
+- **Permissions** — `view_dashboard`, `adjust_gain`, `manage_config`, `manage_monitors`, `manage_users`, `manage_roles`, `manage_license` (the former `set_override` was merged into `adjust_gain`)
 - **Permission-gated UI** — override, dry run, schedule, controller settings, and monitor config sections are hidden based on the logged-in user's permissions
 - **Login page** — secure sign-in with session cookies (HttpOnly, SameSite=Strict)
 - **Lock screen** — `Ctrl+Shift+L` or 🔒 button locks the dashboard; lock state is server-side so page refresh cannot bypass it
