@@ -1,5 +1,20 @@
 # Release Notes - SPL Controller
 
+## v3.0.2 — Fix unstyled starter page at the root URL
+
+**Release Date:** June 9, 2026
+
+### Bug Fixes
+
+- **Root URL no longer shows the Next/Nx starter page** — `apps/dashboard/src/app/page.tsx` was still the generated starter template ("Hello there, Welcome dashboard 👋"). A logged-in user who opened the bare root URL (`/`) in a new tab got that placeholder served as `index.html` instead of the app, which looked like broken/unstyled CSS. (Not logged in, `/` already redirected to `/login`, which is why navigating to `/login` was a workaround.) The controller now redirects `/` → `/dashboard` for authenticated users, and the root page is a minimal client redirect to `/dashboard` rather than the starter template. Present since v1.0.0.
+
+### Infrastructure
+
+- Docker image: `ghcr.io/steeplestack/zonal-controller:3.0.2`
+- No migration or compose changes required.
+
+---
+
 ## v3.0.1 — Feature gating no longer requires `manage_license`
 
 **Release Date:** June 9, 2026
