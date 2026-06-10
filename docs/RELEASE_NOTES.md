@@ -1,5 +1,17 @@
 # Release Notes - SPL Controller
 
+## v3.2.1 — CI maintenance: Node.js 24 action runtimes
+
+**Release Date:** June 10, 2026
+
+### Infrastructure
+
+- **GitHub Actions workflows bumped to Node.js 24 runtimes** — GitHub forces Node 24 for JS actions starting June 16, 2026 and removes Node 20 from runners on Sept 16. All JS-based actions across the build, license-server, and mirror workflows were pinned to their node24-default releases (`actions/checkout` v5, `actions/setup-node` v5, `actions/upload-artifact` v6, `actions/download-artifact` v7, `docker/setup-buildx-action` v4, `docker/login-action` v4, `docker/build-push-action` v7, `docker/metadata-action` v6, `softprops/action-gh-release` v3.0.0). `appleboy/ssh-action` is a Docker action and is unaffected. **No application code changes** — this is a CI-only release.
+- Docker image: `ghcr.io/steeplestack/zonal-controller:3.2.1`
+- No migration or compose changes required.
+
+---
+
 ## v3.2.0 — Q-SYS & dashboard-stream efficiency + dependency advisories cleared
 
 **Release Date:** June 9, 2026
