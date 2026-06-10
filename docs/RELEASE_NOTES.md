@@ -1,5 +1,29 @@
 # Release Notes - SPL Controller
 
+## v3.2.0 — Q-SYS & dashboard-stream efficiency + dependency advisories cleared
+
+**Release Date:** June 9, 2026
+
+### Improvements
+
+- **Fewer Q-SYS round-trips per gain change** — the controller used to issue a `Control.Get` to re-read the live gain immediately before every `Control.Set`, doubling Q-SYS round-trips and adding a 3 s-timeout failure point on the adjustment path. It now trusts its locally-tracked gain (synced on every MQTT (re)connect and refreshed by a periodic 5-minute resync that still catches external Q-SYS panel changes), so each adjustment is a single `Control.Set`.
+- **More efficient dashboard event stream (SSE)** — the MQTT→SSE bridge now serializes each payload **once** and shares that string across every connected dashboard, instead of re-running `JSON.stringify` per client per message; the initial snapshot sent to a newly-opened tab is **memoized**; and silent `/spl` telemetry is evicted after 60 s so a dead monitor's last reading neither lingers in new-tab snapshots nor grows memory under monitor-ID churn. Retained state topics (hello, acks, gain, config) are untouched and still cleared explicitly on monitor removal. No change to the data dashboards receive — purely internal efficiency.
+
+### Notes
+
+- **Gain-correction responsiveness is tunable, not fixed** — how quickly the system reacts to a sustained level change is the sum of the monitor publish interval (default 5 s), the raise/lower cooldowns (20 s / 45 s), and the 0.5 dB step. If you want snappier response, lower `publish_interval_sec` (e.g. 2–3 s) and/or the cooldowns in settings — at the cost of more MQTT traffic and Q-SYS writes. All are live-tunable; no redeploy needed.
+
+### Security
+
+- **All remaining Dependabot advisories cleared (4 moderate, 2 low → 0)** — pinned the dev-tooling transitive packages flagged by Dependabot via npm `overrides`: `esbuild` ≥0.25.0 (dev-server SSRF), `uuid` ≥11.1.1 (buffer bounds), `file-type` ≥21.3.2 (ZIP-bomb / ASF infinite-loop DoS), and `webpack` ≥5.104.1 (buildHttp `allowedUris` SSRF ×2). None are runtime dependencies of the controller or license-server; only `esbuild` is on the build path (controller). Lockfile regenerated under npm 10.9.8 to match CI.
+
+### Infrastructure
+
+- Docker image: `ghcr.io/steeplestack/zonal-controller:3.2.0`
+- No migration or compose changes required.
+
+---
+
 ## v3.1.0 — Reliable control delivery, monitor presence & broker hardening
 
 **Release Date:** June 9, 2026
