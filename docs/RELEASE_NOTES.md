@@ -1,5 +1,31 @@
 # Release Notes - SPL Controller
 
+## v3.3.0 — Dashboard redesign: the "Steady Hand" visual + UX overhaul
+
+**Release Date:** June 14, 2026
+
+### Dashboard
+
+- **Complete visual and interaction redesign of the operator dashboard** onto Steeplestack's "Steady Hand" design system, the same console-grade language as the marketing site, tuned here for dim AV booths and arm's-length legibility. The previous neon-green/cyan terminal theme gives way to a calmer Console Slate surface with a single Signal Emerald accent that consistently means "in range." Behavior is unchanged throughout: same MQTT data, same controls, same permissions and license gating, same keyboard shortcuts.
+- **Clearer SPL meter and history chart** — the level chart now draws an explicit in-range target band, a labeled dB grid, and distinct low/high threshold lines, so an operator sees at a glance whether a zone is under, in, or over its window. The meter bar now reads as a calibrated scale rather than a progress bar.
+- **De-cluttered zone cards** — tighter hierarchy, a single consistent status-chip vocabulary (color now maps to meaning), underline tabs, and restyled faders. The five-tab structure (settings / override / schedule / profiles / gang) is untouched.
+- **Admin and Licensing now open as side drawers** instead of pushing the page down, so the live meters stay visible while you manage users, roles, or licensing.
+
+### Reliability
+
+- **Dashboard fonts are now bundled into the build instead of fetched from Google Fonts at runtime.** On isolated or offline church LANs the old runtime web-font request could fail and leave the interface in fallback fonts; it now renders identically with no outbound font request. This is the one functional fix in an otherwise presentation-level release.
+
+### Accessibility
+
+- Keyboard focus is now always visible (emerald focus rings on controls and inputs), motion honors the operating system's "reduce motion" setting, and text and control contrast were raised to meet WCAG 2.2 AA in the booth-dark palette.
+
+### Infrastructure
+
+- Docker image: `ghcr.io/steeplestack/zonal-controller:3.3.0`
+- No migration, configuration, or compose changes required. This is a controller-bundled dashboard update; upgrade by pulling the new image or binary.
+
+---
+
 ## v3.2.1 — CI maintenance: Node.js 24 action runtimes
 
 **Release Date:** June 10, 2026
