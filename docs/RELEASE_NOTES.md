@@ -1,5 +1,30 @@
 # Release Notes - SPL Controller
 
+## v3.4.0 — Link channel: secure remote support & operator-approved updates (Phase 1)
+
+**Release Date:** June 14, 2026
+
+### New
+
+- **Remote service & update channel ("Link").** Controllers can now maintain a single secure, outbound connection to Steeplestack for support and software updates, so a controller on a closed church network can be helped and kept current without opening any inbound ports or anyone visiting the booth. It is built to be auditable rather than a hidden back door:
+  - **Outbound only** — the controller dials out; nothing can connect *in* to your network.
+  - **Mutually authenticated and signed** — the controller and Steeplestack each prove their identity with their own keys, and every remote action is cryptographically signed and verified on the controller before it runs. A tampered or forged instruction is rejected.
+  - **A fixed, narrow set of actions** — status, logs, diagnostics, check-for-update, apply-update, and restart. There is **no remote shell** in this release.
+  - **Operator-approved updates** — the controller reports when a new signed version is available; a Steeplestack operator applies it deliberately. Updates are checksum- and signature-verified, downgrades are refused, and the previous version is kept for rollback. Works for both container and native installs.
+  - **You stay in control** — Link is on by default but can be switched off from the dashboard at any time, and every action is recorded in a tamper-evident local log.
+
+### Notes
+
+- This is **Phase 1** (scoped management + updates). An on-demand, time-boxed, fully-recorded interactive support session is planned for a later release.
+- Existing behavior is unchanged. If the Link service is unreachable the controller simply keeps running and retries quietly in the background; nothing about audio control, MQTT, or the dashboard depends on it.
+
+### Infrastructure
+
+- Docker image: `ghcr.io/steeplestack/zonal-controller:3.4.0`
+- No migration, configuration, or compose changes required for the controller. (Operators: the Link relay is a new server-side service deployed separately.)
+
+---
+
 ## v3.3.0 — Dashboard redesign: the "Steady Hand" visual + UX overhaul
 
 **Release Date:** June 14, 2026
