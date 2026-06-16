@@ -1,5 +1,24 @@
 # Release Notes - SPL Controller
 
+## v3.6.0 — Apply updates from the dashboard
+
+**Release Date:** June 16, 2026
+
+### New
+
+- **Customers can apply updates themselves.** When a new signed release is available, a dashboard user with the new **Apply Updates** permission sees an "Update available" badge in the header. Clicking it opens a window with the release notes and a single **Apply** button (or Cancel). The controller verifies the update's signature, refuses anything that isn't a genuine upgrade, then restarts to apply — the page reconnects on its own. This sits alongside the existing operator-applied path; both go through the same signed-manifest checks, so neither can install an unsigned or downgraded build.
+
+### Permissions
+
+- New **`apply_updates`** permission. It is granted to the **superadmin** role automatically, including on existing installs (added on first start after upgrade). Assign it to other roles under Users & Roles if you want additional people to be able to apply updates. Users without it are unaffected and won't see the badge.
+
+### Infrastructure
+
+- Docker image: `ghcr.io/steeplestack/zonal-controller:3.6.0`
+- No migration or compose changes required (the permission is added automatically on first start).
+
+---
+
 ## v3.5.3 — Proactive update reporting
 
 **Release Date:** June 16, 2026
