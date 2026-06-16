@@ -1,5 +1,20 @@
 # Release Notes - SPL Controller
 
+## v3.5.1 — Fix: support channel on multi-controller machines
+
+**Release Date:** June 16, 2026
+
+### Fixes
+
+- **Co-located controllers no longer fight over the support connection.** On a machine running more than one controller (e.g. a `cafe` and a `lobby` controller sharing one license), both controllers were presenting the same identity to the Link service, so they repeatedly bumped each other offline and interactive support sessions couldn't hold. Each controller now connects under its own identity, so they coexist cleanly and each appears separately in the fleet view. Single-controller installs are unaffected. No application behavior changes; configuration, MQTT, and audio control are untouched.
+
+### Infrastructure
+
+- Docker image: `ghcr.io/steeplestack/zonal-controller:3.5.1`
+- No migration or compose changes required.
+
+---
+
 ## v3.5.0 — Link channel Phase 2: on-demand interactive support sessions
 
 **Release Date:** June 15, 2026
