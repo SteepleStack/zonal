@@ -1,5 +1,20 @@
 # Release Notes - SPL Controller
 
+## v3.5.2 — Mark the dashboard-hosting controller in the fleet view
+
+**Release Date:** June 16, 2026
+
+### Improvements
+
+- **Controllers can identify which one hosts the dashboard.** On a machine running several controllers, set `LINK_PRIMARY=true` on the one that serves the operator dashboard; it reports this to Steeplestack so the fleet view can mark it as primary. Optional and off by default; no effect on single-controller installs. No application behavior changes.
+
+### Infrastructure
+
+- Docker image: `ghcr.io/steeplestack/zonal-controller:3.5.2`
+- No migration or compose changes required (set `LINK_PRIMARY=true` only on the dashboard-hosting controller if you want it flagged).
+
+---
+
 ## v3.5.1 — Fix: support channel on multi-controller machines
 
 **Release Date:** June 16, 2026
