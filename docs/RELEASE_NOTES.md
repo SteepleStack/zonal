@@ -1,5 +1,21 @@
 # Release Notes - SPL Controller
 
+## v3.5.3 — Proactive update reporting
+
+**Release Date:** June 16, 2026
+
+### Improvements
+
+- **Controllers report available updates on their own.** Each controller checks for a newer signed release when it connects and periodically thereafter, so a pending update shows up in the operator fleet view automatically (and clears once applied), without anyone polling each controller. No application behavior changes.
+
+### Infrastructure
+
+- Docker image: `ghcr.io/steeplestack/zonal-controller:3.5.3`
+- No migration or compose changes required.
+- (Operators) An optional docker host-updater is now available for controlled, operator-approved updates on container installs; see `apps/controller/platforms/docker/host-updater`.
+
+---
+
 ## v3.5.2 — Mark the dashboard-hosting controller in the fleet view
 
 **Release Date:** June 16, 2026
