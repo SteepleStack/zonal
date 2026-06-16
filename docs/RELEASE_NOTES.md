@@ -1,5 +1,20 @@
 # Release Notes - SPL Controller
 
+## v3.6.1 — Removed monitors clear from the dashboard without a restart
+
+**Release Date:** June 16, 2026
+
+### Fixes
+
+- **A monitor you remove (or clear at the broker) now disappears from the dashboard immediately.** Previously, clearing a monitor's retained presence message left a stale "Monitor offline" entry that kept reappearing in the event log on every refresh until the controller was restarted. The dashboard bridge now treats a cleared (empty) retained message as a removal, so the monitor drops out of open tabs and fresh page loads alike. No configuration or other behavior changes.
+
+### Infrastructure
+
+- Docker image: `ghcr.io/steeplestack/zonal-controller:3.6.1`
+- No migration or compose changes required.
+
+---
+
 ## v3.6.0 — Apply updates from the dashboard
 
 **Release Date:** June 16, 2026
