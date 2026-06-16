@@ -1,5 +1,30 @@
 # Release Notes - SPL Controller
 
+## v3.5.0 — Link channel Phase 2: on-demand interactive support sessions
+
+**Release Date:** June 15, 2026
+
+### New
+
+- **Live support sessions over the Link channel.** Building on the v3.4.0 remote-service channel, a Steeplestack engineer can now open a short, interactive support shell on a controller to diagnose and fix issues directly, instead of working only through fixed actions. It keeps the same "support, not a back door" posture:
+  - **You always see it.** While a session is live, the dashboard shows a persistent banner across the top of the screen. Nothing happens invisibly.
+  - **You stay in control.** Turning off the support channel (the toggle added in v3.4.0) ends any session immediately and prevents new ones.
+  - **It can't linger.** Every session is time-boxed and closes automatically; it also ends the moment the engineer disconnects, the controller restarts, or the connection drops.
+  - **It's authorized and recorded.** A session can only be started by a signed, verified instruction from Steeplestack, and the entire session is recorded for audit.
+  - **Least privilege.** The session runs as the controller's own service account (confined to its container on container installs), never as an administrator.
+
+### Notes
+
+- Nothing else changes. If the Link channel is disabled or unreachable, the controller runs exactly as before; audio control, MQTT, and the dashboard never depend on it.
+- This completes the Link channel feature set (Phase 1 = scoped management + operator-approved updates; Phase 2 = interactive sessions).
+
+### Infrastructure
+
+- Docker image: `ghcr.io/steeplestack/zonal-controller:3.5.0`
+- No migration, configuration, or compose changes required for the controller.
+
+---
+
 ## v3.4.0 — Link channel: secure remote support & operator-approved updates (Phase 1)
 
 **Release Date:** June 14, 2026
