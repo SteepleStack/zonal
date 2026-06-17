@@ -1,5 +1,24 @@
 # Release Notes - SPL Controller
 
+## v3.7.0 — Guided first run and a phone-friendly dashboard
+
+**Release Date:** June 17, 2026
+
+### New
+
+- **First-run setup guide.** A dashboard with no monitors yet now opens with a short, status-aware setup guide instead of a blank screen: it confirms the controller link, points you to adding your first monitor, and steps aside the moment a zone comes online. While you set up, the SPL meter shows a calm "waiting for the first reading" rather than looking broken.
+
+### Improvements
+
+- **Usable on a phone or tablet.** The header, meters, zone cards, panels, and dialogs now adapt to small screens, so you can glance at the room or add a monitor from a phone. Still dark and legible, and unchanged on the booth monitor.
+
+### Infrastructure
+
+- Docker image: `ghcr.io/steeplestack/zonal-controller:3.7.0`
+- No migration or compose changes required.
+
+---
+
 ## v3.6.1 — Removed monitors clear from the dashboard without a restart
 
 **Release Date:** June 16, 2026
