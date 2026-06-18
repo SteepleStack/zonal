@@ -1,5 +1,27 @@
 # Release Notes - SPL Controller
 
+## v3.8.0 — SPL history and reporting
+
+**Release Date:** June 18, 2026
+
+### New
+
+- **SPL history, on the device.** The controller now keeps a rolling record of each zone's sound level so you can look back, not just glance at the moment. Open **Reports** from the header (the bar-chart icon) for a per-zone history chart over the last 24 hours, 7, 30, or 90 days, with the target band and your thresholds drawn in for context. History is downsampled (a min/average/peak per short interval) so months of data fit comfortably on the controller, and old data is pruned automatically.
+- **Exceedance log.** Whenever the room stays above your high threshold long enough to matter, it's recorded as an exceedance — start time, how long it lasted, and the peak level — and shaded right on the history chart. The Reports panel shows the count and total time over the limit for the range, which is exactly what you need for a noise-compliance conversation.
+- **Export to CSV.** One click exports either the SPL history for a zone or the exceedance log for the range, for your records or a report.
+
+### Notes
+
+- Recording is on by default and needs no configuration. History is stored per controller under `/data/<controller_id>/`, so two co-located controllers sharing a data volume never collide. Tunable via optional env vars (`REPORTS_ENABLED`, `REPORTS_RETENTION_DAYS`, `REPORTS_BUCKET_SEC`, `REPORTS_EXCEEDANCE_MIN_SEC`) — see the deployment `.env.example`.
+- Reports are visible to anyone who can view the dashboard. Exceedances are tracked at the controller (room) level against its high threshold.
+
+### Infrastructure
+
+- Docker image: `ghcr.io/steeplestack/zonal-controller:3.8.0`
+- No migration or compose changes required.
+
+---
+
 ## v3.7.0 — Guided first run and a phone-friendly dashboard
 
 **Release Date:** June 17, 2026
