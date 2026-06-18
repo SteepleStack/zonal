@@ -1,5 +1,25 @@
 # Release Notes - SPL Controller
 
+## v3.9.0 — Live over-limit alerts
+
+**Release Date:** June 18, 2026
+
+### New
+
+- **You're told the moment a room goes over the limit.** Building on the v3.8.0 exceedance log, the dashboard now alerts live: when a zone stays above its high threshold long enough to count (not a brief spike), a red **"Over limit"** banner appears in the header and a notification pops, with the level and how far over it is. It clears on its own once the room comes back down, and the event log records both when it started and how long it lasted. So whoever's at the booth gets a clear nudge to bring it down, even if they weren't watching the meter.
+
+### Notes
+
+- Alerts trigger on the same sustained-exceedance logic as the Reports log (default: over the high threshold for ~10s before it counts), so momentary peaks don't nag. The threshold is your existing high threshold; tune the sustain window with `REPORTS_EXCEEDANCE_MIN_SEC` if needed.
+- This is the in-dashboard alert. Emailing an exceedance summary to someone who isn't at the booth is a planned follow-up.
+
+### Infrastructure
+
+- Docker image: `ghcr.io/steeplestack/zonal-controller:3.9.0`
+- No migration or compose changes required.
+
+---
+
 ## v3.8.0 — SPL history and reporting
 
 **Release Date:** June 18, 2026
