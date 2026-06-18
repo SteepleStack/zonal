@@ -1,5 +1,30 @@
 # Release Notes - SPL Controller
 
+## v3.10.0 — Emailed SPL reports
+
+**Release Date:** June 18, 2026
+
+### New
+
+- **Have SPL reports emailed to you.** Open **Reports** and, under **Email reports**, enter an address and turn on the weekly summary. Each week that address receives a tidy report: per-zone average and peak levels, and the exceedance log (how many times the room went over the limit and for how long). A **Send test** button sends one right away so you can confirm it arrives.
+
+### How it works
+
+- The report is delivered through the Steeplestack relay (the same secure channel used for remote support and updates), so **your controller never needs its own email account or password**. The controller assembles the figures and hands them to the relay, which sends the email.
+- The recipient and the weekly toggle are saved on the controller and require the **Manage Config** permission to change.
+
+### Notes
+
+- For an administrator running the relay: set `RESEND_API_KEY` on the link-relay (see its `.env.example`). Until it's set, report requests are accepted but no email is sent. Emails come from the verified `updates.steeplestack.org` domain.
+- Real-time over-limit alerts (v3.9.0) are unchanged; this adds the periodic emailed summary.
+
+### Infrastructure
+
+- Docker image: `ghcr.io/steeplestack/zonal-controller:3.10.0`
+- No migration or compose changes required on the controller.
+
+---
+
 ## v3.9.0 — Live over-limit alerts
 
 **Release Date:** June 18, 2026
