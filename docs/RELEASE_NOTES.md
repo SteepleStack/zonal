@@ -1,5 +1,25 @@
 # Release Notes - SPL Controller
 
+## v3.11.0 — PDF reports and a polished report design
+
+**Release Date:** June 19, 2026
+
+### New
+
+- **Export a PDF report.** Reports now has an **PDF report** button that produces a clean, printable one-pager: a branded header, the headline numbers (exceedances, total time over the limit, zones), the SPL history chart, a per-zone average/peak table, and the exceedance log. Use your browser's Save as PDF to keep or share it — handy for board meetings or compliance records.
+
+### Improved
+
+- **The emailed report looks the part.** The weekly email has been redesigned as a tidy, branded statement: a clear "within limits" or "over the limit" verdict banner, a summary strip, and clean per-zone and exceedance tables. It's built to render well across email clients (including Outlook and Gmail).
+- **New app logo and icons.** Refreshed favicon and logo throughout the dashboard.
+
+### Infrastructure
+
+- Docker image: `ghcr.io/steeplestack/zonal-controller:3.11.0`
+- No migration or compose changes required.
+
+---
+
 ## v3.10.0 — Emailed SPL reports
 
 **Release Date:** June 18, 2026
