@@ -1,5 +1,20 @@
 # Release Notes - SPL Controller
 
+## v3.11.1 — Favicon fix
+
+**Release Date:** June 20, 2026
+
+### Fixed
+
+- **The dashboard now shows its own favicon in the browser tab.** Requests for `/favicon.ico` were being redirected to the login page by the auth gate, so the browser fell back to a generic icon. The favicon and logo paths are now served without requiring a login. (The license admin server got the same fix separately.)
+
+### Infrastructure
+
+- Docker image: `ghcr.io/steeplestack/zonal-controller:3.11.1`
+- No migration or compose changes required.
+
+---
+
 ## v3.11.0 — PDF reports and a polished report design
 
 **Release Date:** June 19, 2026
